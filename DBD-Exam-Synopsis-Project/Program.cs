@@ -103,7 +103,33 @@ void ConsoleCreatePerson()
 {
     Console.WriteLine("\ncreate a Person");
     string? PName = null;
+    int? PId = null;
+    while (PId == null)
+    {
+        Console.WriteLine("Please enter the id of the person and press enter:");
+        Console.WriteLine("Or press \"b\" or input \"back\" then press the enter key to to go back to the procedure select menu");
 
+        string? userInput = Console.ReadLine();
+
+        if (userInput == "b" || userInput == "B" || userInput == "back" || userInput == "Back")
+        {
+            return;
+        }
+
+        var isNumeric = int.TryParse(userInput, out int number);
+        if (!isNumeric)
+        {
+            Console.WriteLine("\nInvalid input. Please enter a valid id for the  person or press b or back to go back to the procedure select menu");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+            continue;
+        }
+
+        PId = number;
+
+
+
+
+    }
     while (PName == null)
     {
         Console.WriteLine("Please enter a name for the person and press enter:");
