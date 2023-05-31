@@ -29,4 +29,4 @@ JOIN PersonFriend pf2
 ON pf2.PersonID = pf1.FriendID
 JOIN Person p2
 ON pf2.FriendID = p2.PId
-WHERE p1.PName = 'Alice' AND pf2.FriendID <> p1.PId
+WHERE p1.PName = 'Bob' AND pf2.FriendID <> p1.PId

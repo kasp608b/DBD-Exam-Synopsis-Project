@@ -628,9 +628,15 @@ void ConsoleGetAllFriendsOfFriendsPerson()
             Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.usp_GetAllFriendsOfFriendsPerson(PName);
             long time = sw.ElapsedMilliseconds;
-            Console.WriteLine("\nSucces");
-            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for sql");
+            Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+            sw = Stopwatch.StartNew();
+            var task = graphQueries.GetAllFriendsOfFriendsOfPerson(PName);
+            task.Wait();
+            time = sw.ElapsedMilliseconds;
+            Console.WriteLine("\nSucces for graph");
+            Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
         }

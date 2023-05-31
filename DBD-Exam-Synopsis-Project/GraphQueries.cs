@@ -320,8 +320,9 @@ namespace DBD_Exam_Synopsis_Project
             await session.ExecuteReadAsync(async tx =>
             {
                 var cursor = await tx.RunAsync(@"
-                        MATCH (n:Person {name: $PName})-[:FRIENDS_WITH]->(m)-[:FRIENDS_WITH]->(o)
-                        RETURN  o.id AS id, o.name AS name"
+                        MATCH (n:Person {name: $PName})-[:FRIENDS_WITH]->()-[:FRIENDS_WITH]->(m)
+                        WHERE m.id <> n.id
+                        RETURN  n.name AS PERSON, m.name AS FRIEND_OF_FRIEND"
                 ,
                         new { PName });
 

@@ -37,17 +37,39 @@ INSERT INTO  [Person] (PId, PName) VALUES (6, N'Joy')
 INSERT INTO  [Person] (PId, PName) VALUES (7, N'Theodore')
 INSERT INTO  [Person] (PId, PName) VALUES (8, N'Abner')
 
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (1,2)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (1,3)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,1)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,4)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (4,1)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (3,2)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,3)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (5,6)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (6,7)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (7,8)
-INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (8,4)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (1,2)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (1,3)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,1)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,4)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (2,3)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (4,1)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (3,2)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (5,6)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (6,7)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (7,8)
+--INSERT INTO  [PersonFriend] (PersonID, FriendID) VALUES (8,4)
+
+-- Make everyone friends with everyone.
+DECLARE @i INT = 1;
+DECLARE @j INT;
+
+WHILE @i <= 8
+BEGIN
+    SET @j = 1;
+    WHILE @j <= 8
+    BEGIN
+        IF @i <> @j
+        BEGIN
+            INSERT INTO PersonFriend (PersonID, FriendID)
+            SELECT @i, @j
+            FROM Person
+            WHERE PId = @i;
+        END;
+        SET @j = @j + 1;
+    END;
+    SET @i = @i + 1;
+END;
+
 
 set IDENTITY_INSERT Person OFF
 

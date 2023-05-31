@@ -75,6 +75,14 @@ MATCH (p:Person)
 WHERE p.id = 8
 RETURN p.id,p.name
 
+// MakeEveryoneFriendsWithEveryone
+MATCH (n:Person)
+MATCH (m:Person)
+WHERE n <> m
+CREATE (n)-[:FRIENDS_WITH]->(m)
+
+
+
 //UpdatePersonName
 MATCH (p:Person)
 WHERE p.id = 8
