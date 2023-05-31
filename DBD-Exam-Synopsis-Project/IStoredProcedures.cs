@@ -1,4 +1,4 @@
-﻿namespace DBD_Exam_synopsis_project
+﻿namespace DBD_Exam_Synopsis_Project
 {
     internal interface IStoredProcedures
     {
