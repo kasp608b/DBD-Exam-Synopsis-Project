@@ -53,12 +53,10 @@ set IDENTITY_INSERT Person OFF
 
 ALTER TABLE PersonFriend ADD CONSTRAINT FK_PersonFriend_Person FOREIGN KEY(PersonID)
 REFERENCES Person(PId)
-ON DELETE CASCADE
 GO
 
 ALTER TABLE PersonFriend ADD CONSTRAINT FK_PersonFriend_Person2 FOREIGN KEY(FriendID)
 REFERENCES Person(PId)
-ON DELETE CASCADE
 GO
 
 -----------------------------------------------------------------------------------------------------------------
@@ -111,6 +109,10 @@ BEGIN
 
 	IF NOT EXISTS (SELECT 1 FROM Person WHERE PId = @PId)
 		THROW 50001, 'Person dosen''t exist', 1
+
+    -- Delete all friendships for the person
+    DELETE FROM PersonFriend
+    WHERE PersonID = @PId OR FriendID = @PId;
     
 	DELETE FROM Person
 	WHERE PId = @PId
@@ -192,7 +194,7 @@ END
 
 GO
 
-CREATE or alter PROCEDURE usp_GetAllFriendsOfFriendsPerson
+CREATE or alter PROCEDURE usp_GetAllFriendsOfFriendsOfPerson
 (
 	@PName varchar(50)
 )

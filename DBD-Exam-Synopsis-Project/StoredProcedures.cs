@@ -1,5 +1,4 @@
 ﻿using ConsoleTables;
-using DBD_Exam_synopsis_project;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -370,8 +369,9 @@ namespace DBD_Exam_Synopsis_Project
             {
                 // Create command and set its properties
                 SqlCommand command = new SqlCommand();
+                
                 command.Connection = connection;
-                command.CommandText = "usp_GetAllFriendsOfPersonReciprocal";
+                command.CommandText = "usp_GetAllFriendsOfFriendsOfPerson";
                 command.CommandType = CommandType.StoredProcedure;
 
                 // Add the PName input parameter and set its properties.
