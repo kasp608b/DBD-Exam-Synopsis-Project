@@ -2,6 +2,7 @@
 using DBD_Exam_Synopsis_Project;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
+using Neo4j.Driver;
 using System;
 using System.Configuration;
 using System.Diagnostics;
@@ -10,6 +11,7 @@ using System.Security.Policy;
 // connect to Neo4J and Verify Connectivity
 await Neo4jDriver.InitDriverAsync(ConfigurationManager.ConnectionStrings["Neo4jUri"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jUsername"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jPassword"].ConnectionString);
 IStoredProcedures storedProcedures = new StoredProcedures();
+GraphQueries graphQueries = new GraphQueries();
 bool run = true;
 
 while (run)
@@ -104,7 +106,7 @@ while (run)
     }
 }
 
-void ConsoleCreatePerson()
+async void ConsoleCreatePerson()
 {
     Console.WriteLine("\ncreate a Person");
     string? PName = null;
@@ -160,11 +162,21 @@ void ConsoleCreatePerson()
         try
         {
             Stopwatch sw = Stopwatch.StartNew();
-            storedProcedures.CreatePerson(PName);
+            int id = storedProcedures.CreatePerson(PName);
             long time = sw.ElapsedMilliseconds;
-            Console.WriteLine("\nSucces");
-            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for sql");
+            Console.WriteLine($"Person with id={id} created");
+            Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+            
+            sw = Stopwatch.StartNew();
+            var task = graphQueries.CreatePerson(PName,(int)PId);
+            task.Wait();
+            var graphId =  task.Result["id"];
+            time = sw.ElapsedMilliseconds;
+            Console.WriteLine("\nSucces for graph");
+            Console.WriteLine($"Person with id={graphId} created");
+            Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
         }
@@ -250,9 +262,17 @@ void ConsoleCreatePersonFriend()
         Stopwatch sw = Stopwatch.StartNew();
         int affectedRows = storedProcedures.CreatePersonFriend((int)PId1, (int)PId2);
         long time = sw.ElapsedMilliseconds;
-        Console.WriteLine("\nSucces");
-        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+        Console.WriteLine("\nSucces for sql");
+        Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
         Console.WriteLine("Affected rows: " + affectedRows);
+        Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
+        sw = Stopwatch.StartNew();
+        var task = graphQueries.CreatePersonFriend((int)PId1, (int)PId2);
+        task.Wait();
+        time = sw.ElapsedMilliseconds;
+        Console.WriteLine("\nSucces for graph");
+        Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
@@ -310,6 +330,15 @@ void ConsoleDeletePerson()
         Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
         Console.WriteLine("Affected rows: " + affectedRows);
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
+        sw = Stopwatch.StartNew();
+        var task = graphQueries.DeletePerson((int)PId);
+        task.Wait();
+        time = sw.ElapsedMilliseconds;
+        Console.WriteLine("\nSucces for graph");
+        Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
+        Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+        
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
     }
@@ -337,9 +366,18 @@ void ConsoleGetAllPersons()
         Stopwatch sw = Stopwatch.StartNew();
         storedProcedures.GetAllPersons();
         long time = sw.ElapsedMilliseconds;
-        Console.WriteLine("\nSucces");
-        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+        Console.WriteLine("\nSucces for sql");
+        Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
+        sw = Stopwatch.StartNew();
+        var task = graphQueries.GetAllPersons();
+        task.Wait();
+        time = sw.ElapsedMilliseconds;
+        Console.WriteLine("\nSucces for graph");
+        Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
+        Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
     }
@@ -394,9 +432,16 @@ void ConsoleGetPerson()
         Stopwatch sw = Stopwatch.StartNew();
         storedProcedures.GetPerson((int)PId);
         long time = sw.ElapsedMilliseconds;
-        Console.WriteLine("\nSucces");
-        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+        Console.WriteLine("\nSucces for sql");
+        Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+        
+        sw = Stopwatch.StartNew();
+        var task =  graphQueries.GetPerson((int)PId);
+        task.Wait();
+        time = sw.ElapsedMilliseconds;
+        Console.WriteLine("\nSucces for graph");
+        Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
     }
@@ -450,9 +495,18 @@ void ConsoleGetAllFriendsOfPerson()
             Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.GetAllFriendsOfPerson(PName);
             long time = sw.ElapsedMilliseconds;
-            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
-            Console.WriteLine("\nSucces");
+            Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for sql");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+            
+            sw = Stopwatch.StartNew();
+            var task = graphQueries.GetAllFriendsOfPerson(PName);
+            task.Wait();
+            time = sw.ElapsedMilliseconds;
+            Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for graph");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
         }
@@ -508,8 +562,16 @@ void ConsoleGetAllFriendsOfPersonReciprocal()
             Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.GetAllFriendsOfPersonReciprocal(PName);
             long time = sw.ElapsedMilliseconds;
-            Console.WriteLine("\nSucces");
-            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for sql");
+            Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+           
+            sw = Stopwatch.StartNew();
+            var task =  graphQueries.GetAllFriendsOfPersonReciprocal(PName);
+            task.Wait();
+            time = sw.ElapsedMilliseconds;
+            Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for graph");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
@@ -647,9 +709,18 @@ void ConsoleUpdatePersonName()
             Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.UpdatePersonName((int)PId, PName);
             long time = sw.ElapsedMilliseconds;
-            Console.WriteLine("\nSucces");
-            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
+            Console.WriteLine("\nSucces for sql");
+            Console.WriteLine("Time elapsed for sql: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+           
+            sw = Stopwatch.StartNew();
+            var task = graphQueries.UpdatePersonName((int)PId, PName);
+            task.Wait();
+            time = sw.ElapsedMilliseconds;
+            Console.WriteLine("\nSucces for graph");
+            Console.WriteLine("Time elapsed for graph: " + time / 1000.0 + " seconds");
+            Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
+
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
         }

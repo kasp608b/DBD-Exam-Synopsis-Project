@@ -138,6 +138,7 @@ namespace DBD_Exam_Synopsis_Project
                         {
                             columns.Add(reader.GetName(i));
                         }
+                        
 
                         table.AddColumn(columns);
 
