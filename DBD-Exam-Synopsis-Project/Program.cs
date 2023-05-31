@@ -2,6 +2,7 @@
 using DBD_Exam_Synopsis_Project;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
+using System.Diagnostics;
 
 IStoredProcedures storedProcedures = new StoredProcedures();
 bool run = true;
@@ -127,8 +128,11 @@ void ConsoleCreatePerson()
        
         try
         {
+            Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.CreatePerson(PName);
+            long time = sw.ElapsedMilliseconds;
             Console.WriteLine("\nSucces");
+            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
@@ -212,8 +216,11 @@ void ConsoleCreatePersonFriend()
     }
     try
     {
+        Stopwatch sw = Stopwatch.StartNew();
         int affectedRows = storedProcedures.CreatePersonFriend((int)PId1, (int)PId2);
+        long time = sw.ElapsedMilliseconds;
         Console.WriteLine("\nSucces");
+        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
         Console.WriteLine("Affected rows: " + affectedRows);
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
         Console.WriteLine("Press any key to continue");
@@ -264,8 +271,12 @@ void ConsoleDeletePerson()
     }
     try
     {
+
+        Stopwatch sw = Stopwatch.StartNew();
         int affectedRows = storedProcedures.DeletePerson((int)PId);
+        long time = sw.ElapsedMilliseconds;
         Console.WriteLine("\nSucces");
+        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
         Console.WriteLine("Affected rows: " + affectedRows);
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
         Console.WriteLine("Press any key to continue");
@@ -291,8 +302,12 @@ void ConsoleGetAllPersons()
 {
     try
     {
+
+        Stopwatch sw = Stopwatch.StartNew();
         storedProcedures.GetAllPersons();
+        long time = sw.ElapsedMilliseconds;
         Console.WriteLine("\nSucces");
+        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
@@ -344,8 +359,12 @@ void ConsoleGetPerson()
     }
     try
     {
+
+        Stopwatch sw = Stopwatch.StartNew();
         storedProcedures.GetPerson((int)PId);
+        long time = sw.ElapsedMilliseconds;
         Console.WriteLine("\nSucces");
+        Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
         Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
         Console.WriteLine("Press any key to continue");
         Console.ReadLine();
@@ -396,7 +415,11 @@ void ConsoleGetAllFriendsOfPerson()
         
         try
         {
+
+            Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.GetAllFriendsOfPerson(PName);
+            long time = sw.ElapsedMilliseconds;
+            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
             Console.WriteLine("\nSucces");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
@@ -450,8 +473,12 @@ void ConsoleGetAllFriendsOfPersonReciprocal()
        
         try
         {
+
+            Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.GetAllFriendsOfPersonReciprocal(PName);
+            long time = sw.ElapsedMilliseconds;
             Console.WriteLine("\nSucces");
+            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
@@ -504,8 +531,12 @@ void ConsoleGetAllFriendsOfFriendsPerson()
         
         try
         {
+
+            Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.usp_GetAllFriendsOfFriendsPerson(PName);
+            long time = sw.ElapsedMilliseconds;
             Console.WriteLine("\nSucces");
+            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
@@ -581,8 +612,12 @@ void ConsoleUpdatePersonName()
 
         try
         {
+
+            Stopwatch sw = Stopwatch.StartNew();
             storedProcedures.UpdatePersonName((int)PId, PName);
+            long time = sw.ElapsedMilliseconds;
             Console.WriteLine("\nSucces");
+            Console.WriteLine("Time elapsed: " + time / 1000.0 + " seconds");
             Console.WriteLine("-----------------------------------------------------------------------------------------------------------------\n");
             Console.WriteLine("Press any key to continue");
             Console.ReadLine();
