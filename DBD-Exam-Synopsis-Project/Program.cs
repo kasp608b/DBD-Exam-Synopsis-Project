@@ -2,8 +2,13 @@
 using DBD_Exam_Synopsis_Project;
 using Microsoft.Data.SqlClient;
 using Microsoft.Identity.Client;
+using System;
+using System.Configuration;
 using System.Diagnostics;
+using System.Security.Policy;
 
+// connect to Neo4J and Verify Connectivity
+await Neo4jDriver.InitDriverAsync(ConfigurationManager.ConnectionStrings["Neo4jUri"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jUsername"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jPassword"].ConnectionString);
 IStoredProcedures storedProcedures = new StoredProcedures();
 bool run = true;
 
