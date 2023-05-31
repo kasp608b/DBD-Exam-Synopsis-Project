@@ -1,11 +1,7 @@
-﻿namespace DBD_Comp_StoredProcedures
+﻿namespace DBD_Exam_synopsis_project
 {
     internal interface IStoredProcedures
     {
-        int CreatePerson(string PName);
-
-        void CreatePersonFriend(int PId1, int PId2);
-
         void GetAllPersons();
 
         void GetPerson(int PId);
@@ -15,6 +11,9 @@
         void GetAllFriendsOfPersonReciprocal(string PName);
 
         void usp_GetAllFriendsOfFriendsPerson(string PName);
+        int CreatePerson(string PName);
+
+        int CreatePersonFriend(int PId1, int PId2);
 
         int UpdatePersonName(int PId, string PName);
 
