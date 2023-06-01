@@ -222,13 +222,24 @@ CREATE or alter PROCEDURE usp_GetAllFriendsOfFriendsOfPerson
 )
 AS
 BEGIN 
-	SELECT p1.PName AS PERSON, p2.PName AS FRIEND_OF_FRIEND
-	FROM PersonFriend pf1 JOIN Person p1
+	SELECT DISTINCT p1.PName AS PERSON, p2.PName AS FRIEND_OF_FRIEND
+
+	--Join the person table to the friends table. 
+	--to find the friends of the person.
+	FROM PersonFriend pf1 
+	JOIN Person p1
 	ON pf1.PersonID = p1.PId
+
+	--Join the the friends table to itself on the personid to the friendsid
+	-- to get the personid's of the friends of the friends.
 	JOIN PersonFriend pf2
 	ON pf2.PersonID = pf1.FriendID
+
+	--We join the person table onto the second friends table to find the names
+	-- Of the friends friends.
 	JOIN Person p2
 	ON pf2.FriendID = p2.PId
+
 	WHERE p1.PName = @PName AND pf2.FriendID <> p1.PId
 END
 

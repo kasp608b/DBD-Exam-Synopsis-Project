@@ -311,7 +311,7 @@ namespace DBD_Exam_Synopsis_Project
 
         public async Task GetAllFriendsOfFriendsOfPerson(string PName)
         {
-            // Create a Session for the `people` database
+            // Create a Session for the `Friends` database
             using var session = Neo4jDriver.Driver.AsyncSession(configBuilder =>
                 configBuilder
                     .WithDefaultAccessMode(AccessMode.Read));
@@ -322,7 +322,7 @@ namespace DBD_Exam_Synopsis_Project
                 var cursor = await tx.RunAsync(@"
                         MATCH (n:Person {name: $PName})-[:FRIENDS_WITH]->()-[:FRIENDS_WITH]->(m)
                         WHERE m.id <> n.id
-                        RETURN  n.name AS PERSON, m.name AS FRIEND_OF_FRIEND"
+                        RETURN DISTINCT n.name AS PERSON, m.name AS FRIEND_OF_FRIEND"
                 ,
                         new { PName });
 

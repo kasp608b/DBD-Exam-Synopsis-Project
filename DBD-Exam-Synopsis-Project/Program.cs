@@ -9,7 +9,11 @@ using System.Diagnostics;
 using System.Security.Policy;
 
 // connect to Neo4J and Verify Connectivity
-await Neo4jDriver.InitDriverAsync(ConfigurationManager.ConnectionStrings["Neo4jUri"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jUsername"].ConnectionString, ConfigurationManager.ConnectionStrings["Neo4jPassword"].ConnectionString);
+await Neo4jDriver.InitDriverAsync(
+    ConfigurationManager.ConnectionStrings["Neo4jUri"].ConnectionString,
+    ConfigurationManager.ConnectionStrings["Neo4jUsername"].ConnectionString, 
+    ConfigurationManager.ConnectionStrings["Neo4jPassword"].ConnectionString);
+
 IStoredProcedures storedProcedures = new StoredProcedures();
 GraphQueries graphQueries = new GraphQueries();
 bool run = true;
