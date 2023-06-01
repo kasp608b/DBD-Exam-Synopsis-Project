@@ -51,7 +51,7 @@ DETACH DELETE p
 // GetAllFriendsOfFriendsOfPerson
 MATCH (n:Person {name: 'Alice'})-[:FRIENDS_WITH*2]->(m)
 WHERE m.id <> n.id
-RETURN n.name AS PERSON, m.name AS FRIEND_OF_FRIEND
+RETURN DISTINCT n.name AS PERSON, m.name AS FRIEND_OF_FRIEND
 
 
 //GetAllFriendsOfPerson
